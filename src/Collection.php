@@ -12,7 +12,7 @@ namespace Leaditin\Distribution;
  */
 class Collection implements \Countable, \IteratorAggregate
 {
-    /** @var Element[] */
+    /** @var array|Element[] */
     private $elements;
 
     /**

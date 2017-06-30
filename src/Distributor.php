@@ -21,7 +21,7 @@ class Distributor
     private $ranges;
 
     /**
-     * @param Collection|Element[] $probabilities
+     * @param Collection $probabilities
      * @param int $numberOfElementsToDistribute
      */
     public function __construct(Collection $probabilities, int $numberOfElementsToDistribute)
@@ -38,21 +38,21 @@ class Distributor
      */
     public function useRandomCode(array $excludeCodes = null) : string
     {
-        $possibleCodes = [];
+        $eligibleCodes = [];
 
         foreach ($this->probabilities as $code => $value) {
-            if ($value <= 0 || ($excludeCodes !== null && in_array($code, $excludeCodes, true))) {
+            if ($value <= 0 || in_array($code, (array)$excludeCodes, true)) {
                 continue;
             }
 
-            $possibleCodes[$code] = $value;
+            $eligibleCodes[$code] = $value;
         }
 
-        if (empty($possibleCodes)) {
+        if (empty($eligibleCodes)) {
             throw DistributorException::exceededAllValues();
         }
 
-        $code = $this->randomize($possibleCodes);
+        $code = $this->randomize($eligibleCodes);
         $this->probabilities[$code]--;
 
         return (string)$code;
@@ -79,7 +79,7 @@ class Distributor
     }
 
     /**
-     * @param Collection|Element[] $collection
+     * @param Collection $collection
      */
     private function setRanges(Collection $collection)
     {
@@ -103,53 +103,63 @@ class Distributor
      */
     private function randomize(array $possibleCodes) : string
     {
+        $code = null;
         $probabilityRanges = $this->ranges;
-        foreach ($probabilityRanges as $code => $range) {
-            if (!array_key_exists($code, $possibleCodes)) {
-                unset($probabilityRanges[$code]);
-            }
-        }
 
         while (true) {
             $int = random_int(1, 100);
             foreach ($probabilityRanges as $code => $range) {
+                if (!array_key_exists($code, $possibleCodes)) {
+                    continue;
+                }
+
                 if ($int >= $range['min'] && $int <= $range['max']) {
-                    return (string)$code;
+                    break 2;
                 }
             }
         }
+
+        return (string)$code;
     }
 
     /**
-     * @param Collection|Element[] $collection
+     * @param Collection $probabilities
      * @param int $numberOfElementsToDistribute
-     * @return Collection|Element[]
+     * @return Collection
      */
-    private function getNumerifiedCollection(Collection $collection, int $numberOfElementsToDistribute) : Collection
+    private function getNumerifiedCollection(Collection $probabilities, int $numberOfElementsToDistribute) : Collection
     {
         $elements = [];
-
-        /** @var Collection $collection */
-        $collection = $collection->getToppedUpCollection();
-        if ($collection->count() > $numberOfElementsToDistribute) {
-            $collection = $collection->getSortedCollection()->getReversedCollection();
-        }
+        $collection = $probabilities
+            ->getToppedUpCollection()
+            ->getSortedCollection()
+            ->getReversedCollection();
 
         foreach ($collection as $element) {
-            if (count($elements) === $numberOfElementsToDistribute) {
-                break;
-            }
-
-            if ($element->getValue() === 0.0) {
-                $elements[] = new Element($element->getCode(), 0);
-                continue;
-            }
-
-            $value = $numberOfElementsToDistribute * $element->getValue() / 100;
-            $numeric = $value < 1 ? 1 : round($value);
-            $elements[] = new Element($element->getCode(), $numeric);
+            $elements[] = new Element(
+                $element->getCode(),
+                $this->deriveNumericValue($element, $numberOfElementsToDistribute)
+            );
         }
 
+        $elements = array_slice($elements, 0, $numberOfElementsToDistribute);
+
         return new Collection(...$elements);
+    }
+
+    /**
+     * @param Element $element
+     * @param int $numberOfElementsToDistribute
+     * @return float
+     */
+    private function deriveNumericValue(Element $element, int $numberOfElementsToDistribute) : float
+    {
+        if ($element->getValue() === 0.00) {
+            return 0;
+        }
+
+        $value = $numberOfElementsToDistribute * $element->getValue() / 100;
+
+        return $value < 1 ? 1 : round($value);
     }
 }
