@@ -20,20 +20,20 @@ composer require igorvuckovic/distribution
 
 ```php
 use Leaditin\Distribution\Collection;
-use Leaditin\Distribution\Distribution;
+use Leaditin\Distribution\Distributor;
 use Leaditin\Distribution\Element;
 use Leaditin\Distribution\Exception\DistributorException;
 
-$collection = new Collection(
+$probabilities = new Collection(
     new Element('MALE', 53.25),
     new Element('FEMALE', 46.75)
 );
 
-$distribution = new Distribution($collection, 100);
+$distributor = new Distributor($probabilities, 100);
 
 while (true) {
     try {
-        echo $distribution->useRandomCode() . PHP_EOL;
+        echo $distributor->useRandomCode() . PHP_EOL;
     } catch (DistributorException $e) {
         break;
     }
