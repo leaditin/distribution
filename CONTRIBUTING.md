@@ -1,6 +1,6 @@
 # Contributing
 
-We accept contributions via Pull Requests on [Github](https://github.com/igorvuckovic/distribution).
+We accept contributions via Pull Requests on [Github](https://github.com/leaditin/distribution).
 
 ## Running tests
 

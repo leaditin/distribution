@@ -1,4 +1,4 @@
-# Moment
+# Leaditin\Distribution
 
 A simple PHP API for distributing values based on their probabilities
 
@@ -13,7 +13,7 @@ A simple PHP API for distributing values based on their probabilities
 The preferred method of installation is via [Composer](http://getcomposer.org/). Run the following command to install the latest version of a package and add it to your project's `composer.json`:
 
 ```bash
-composer require igorvuckovic/distribution
+composer require leaditin/distribution
 ```
 
 ## Usage
@@ -50,15 +50,15 @@ while (true) {
 Released under MIT License - see the [License File](LICENSE) for details.
 
 
-[ico-version]: https://img.shields.io/packagist/v/igorvuckovic/distribution.svg
-[ico-build]: https://travis-ci.org/igorvuckovic/distribution.svg?branch=master
-[ico-code-coverage]: https://img.shields.io/scrutinizer/coverage/g/igorvuckovic/distribution.svg
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/igorvuckovic/distribution.svg
+[ico-version]: https://img.shields.io/packagist/v/leaditin/distribution.svg
+[ico-build]: https://travis-ci.org/leaditin/distribution.svg?branch=master
+[ico-code-coverage]: https://img.shields.io/scrutinizer/coverage/g/leaditin/distribution.svg
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/leaditin/distribution.svg
 [ico-pds]: https://img.shields.io/badge/pds-skeleton-blue.svg
 
-[link-packagist]: https://packagist.org/packages/igorvuckovic/distribution
-[link-build]: https://travis-ci.org/igorvuckovic/distribution
-[link-code-coverage]: https://scrutinizer-ci.com/g/igorvuckovic/distribution/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/igorvuckovic/distribution
+[link-packagist]: https://packagist.org/packages/leaditin/distribution
+[link-build]: https://travis-ci.org/leaditin/distribution
+[link-code-coverage]: https://scrutinizer-ci.com/g/leaditin/distribution/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/leaditin/distribution
 [link-pds]: https://github.com/php-pds/skeleton
 [link-contributors]: ../../contributors
