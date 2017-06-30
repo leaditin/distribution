@@ -38,15 +38,7 @@ class Distributor
      */
     public function useRandomCode(array $excludeCodes = null) : string
     {
-        $eligibleCodes = [];
-
-        foreach ($this->probabilities as $code => $value) {
-            if ($value <= 0 || in_array($code, (array)$excludeCodes, true)) {
-                continue;
-            }
-
-            $eligibleCodes[$code] = $value;
-        }
+        $eligibleCodes = $this->getEligibleCodes($excludeCodes);
 
         if (empty($eligibleCodes)) {
             throw DistributorException::exceededAllValues();
@@ -84,9 +76,11 @@ class Distributor
     private function setRanges(Collection $collection)
     {
         $min = 1;
-        $collection = $this->getNumerifiedCollection($collection, 100)->getSortedCollection();
+        $sortedCollection = $this
+            ->getNumerifiedCollection($collection, 100)
+            ->getSortedCollection();
 
-        foreach ($collection as $element) {
+        foreach ($sortedCollection as $element) {
             if ($element->getValue() === 0.00) {
                 continue;
             }
@@ -97,6 +91,26 @@ class Distributor
         }
     }
 
+
+    /**
+     * @param array|null $excludeCodes
+     * @return array
+     */
+    private function getEligibleCodes(array $excludeCodes = null) : array
+    {
+        $eligibleCodes = [];
+
+        foreach ($this->probabilities as $code => $value) {
+            if ($value <= 0 || in_array($code, (array)$excludeCodes, true)) {
+                continue;
+            }
+
+            $eligibleCodes[$code] = $value;
+        }
+
+        return $eligibleCodes;
+    }
+
     /**
      * @param array $possibleCodes
      * @return string
@@ -104,15 +118,11 @@ class Distributor
     private function randomize(array $possibleCodes) : string
     {
         $code = null;
-        $probabilityRanges = $this->ranges;
+        $probabilityRanges = array_intersect_key($this->ranges, $possibleCodes);
 
         while (true) {
             $int = random_int(1, 100);
             foreach ($probabilityRanges as $code => $range) {
-                if (!array_key_exists($code, $possibleCodes)) {
-                    continue;
-                }
-
                 if ($int >= $range['min'] && $int <= $range['max']) {
                     break 2;
                 }
