@@ -121,7 +121,7 @@ class Distributor
 
         do {
             $code = $this->getRandomCodeFromRanges($probabilityRanges);
-        } while (!$code);
+        } while ($code === false);
 
         return (string)$code;
     }
