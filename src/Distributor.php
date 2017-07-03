@@ -117,19 +117,30 @@ class Distributor
      */
     private function randomize(array $possibleCodes) : string
     {
-        $code = null;
         $probabilityRanges = array_intersect_key($this->ranges, $possibleCodes);
 
-        while (true) {
-            $int = random_int(1, 100);
-            foreach ($probabilityRanges as $code => $range) {
-                if ($int >= $range['min'] && $int <= $range['max']) {
-                    break 2;
-                }
+        do {
+            $code = $this->getRandomCodeFromRanges($probabilityRanges);
+        } while (!$code);
+
+        return (string)$code;
+    }
+
+    /**
+     * @param array $ranges
+     * @return bool|string
+     */
+    private function getRandomCodeFromRanges(array $ranges)
+    {
+        $int = random_int(1, 100);
+
+        foreach ($ranges as $code => $range) {
+            if ($int >= $range['min'] && $int <= $range['max']) {
+                return $code;
             }
         }
 
-        return (string)$code;
+        return false;
     }
 
     /**
