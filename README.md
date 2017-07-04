@@ -18,6 +18,13 @@ composer require leaditin/distribution
 
 ## Usage
 
+Imagine that you want to simulate creation of 100 users where each must have defined gender.
+You want to have 53% female and 47% male.
+
+Imagine that you do not want to generate all female users and after that all male users, instead of that you want these records to be generated randomly.
+
+This is where `Leaditin\Distribution` will help you:
+
 ```php
 use Leaditin\Distribution\Collection;
 use Leaditin\Distribution\Distributor;
@@ -25,20 +32,23 @@ use Leaditin\Distribution\Element;
 use Leaditin\Distribution\Exception\DistributorException;
 
 $probabilities = new Collection(
-    new Element('MALE', 53.25),
-    new Element('FEMALE', 46.75)
+    new Element('MALE', 53),
+    new Element('FEMALE', 47)
 );
 
 $distributor = new Distributor($probabilities, 100);
 
-while (true) {
-    try {
-        echo $distributor->useRandomCode() . PHP_EOL;
-    } catch (DistributorException $e) {
-        break;
-    }
-}
+# Create user with random gender
+$user = new \User();
+$user->gender = $distributor->useRandomCode();
+$user->save();
 
+# Create user with explicit gender
+$user = new \User();
+$user->firstName = 'Jon';
+$user->lastName = 'Snow';
+$user->gender = $distributor->useCode('MALE');
+$user->save();
 ```
 
 ## Credits
