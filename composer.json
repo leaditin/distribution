@@ -1,5 +1,5 @@
 {
-    "name": "leaditin/probability",
+    "name": "leaditin/distribution",
     "description": "Probability distribution service",
     "type": "library",
     "license": "MIT",
